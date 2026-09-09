@@ -217,7 +217,10 @@ async fn upload_transcript(mut multipart: Multipart) -> impl IntoResponse {
     let result = tokio::task::spawn_blocking(move || -> Result<_, String> {
         let _permit = permit;
         use sha2::{Digest, Sha256};
-        let digest = format!("{:x}", Sha256::digest(bytes.as_ref()));
+        let digest = Sha256::digest(bytes.as_ref())
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect::<String>();
         let extracted = extract_document(&filename, bytes.as_ref()).map_err(|e| e.to_string())?;
         let profile = TranscriptProfile::us_english();
         let context = preflight_transcript(&extracted, &profile);
