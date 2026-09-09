@@ -1,0 +1,5 @@
+*.[zZ][iI][pP]
+/target
+.env
+.env.*
+!.env.example
